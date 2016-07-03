@@ -8,6 +8,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
+import java.text.StringCharacterIterator;
 
 /**
  * Created by pipob on 03/07/2016.
@@ -15,7 +16,7 @@ import java.text.SimpleDateFormat;
 public class MovieParser{
     String movieNames[];
     String urlImages[];
-    int rating[];
+    String rating[];
 
         public MovieParser(){
 
@@ -39,7 +40,7 @@ public class MovieParser{
             String[] resultStrs = new String[reults.length()];
             movieNames = new String[reults.length()];
             urlImages = new String[reults.length()];
-            rating = new int[reults.length()];
+            rating = new String[reults.length()];
             for(int i = 0; i < reults.length(); i++) {
 
                 try{
@@ -49,8 +50,8 @@ public class MovieParser{
 
                     movieNames[i] = singleMovie.getString("original_title");
                     urlImages[i]  = "https://image.tmdb.org/t/p/w300_and_h450_bestv2" + singleMovie.getString("poster_path");
-                    rating[i] = singleMovie.getInt("vote_average");
-                    //Log.v("TASAD",movieNames    [i]  + urlImages[i]);
+                    rating[i] = singleMovie.getString("vote_average");
+
 
 
 
@@ -72,7 +73,7 @@ public class MovieParser{
         return urlImages;
     }
 
-    public int[] getRating() {
+    public String[] getRating() {
         return rating;
     }
 

@@ -1,7 +1,7 @@
 package app.com.example.pipob.popularmoviesapp;
 
 import android.content.Context;
-import android.media.Image;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,8 +15,6 @@ import com.squareup.picasso.Picasso;
 
 import org.w3c.dom.Text;
 
-import java.util.zip.Inflater;
-
 /**
  * Created by pipob on 03/07/2016.
  */
@@ -25,24 +23,26 @@ public class ImageAdapter extends BaseAdapter {
     LayoutInflater inflater;
     String movies[];
     String urls[];
-    int rating[];
+    String rating[];
     public class Holder
     {
-        TextView movie_Title;
+        TextView movie_Title,rating_Title;
         ImageView movie_Thumb;
         RatingBar  ratingStar;
+
     }
-    public ImageAdapter(Context c,String moviesNames[],String imageUrls[],int rat[]) {
+    public ImageAdapter(Context c,String moviesNames[],String imageUrls[],String rat[]) {
         urls=imageUrls;
         movies=moviesNames;
         rating=rat;
+
         mContext = c;
-         inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
     }
 
     public int getCount() {
-        return urls.length;
+        return movies.length;
     }
 
     public Object getItem(int position) {
@@ -53,25 +53,28 @@ public class ImageAdapter extends BaseAdapter {
         return 0;
     }
 
-    // create a new ImageView for each item referenced by the Adapter
+
     public View getView(final int position, View convertView, ViewGroup parent) {
         Holder holder=new Holder();
         View view = convertView;
 
 
-            view = inflater.inflate(R.layout.grid_layout, null);
+            view = inflater.inflate(R.layout.grid_holder_layout, null);
             holder.movie_Thumb = (ImageView) view.findViewById(R.id.img_thumb_movie);
             holder.movie_Title = (TextView) view.findViewById(R.id.txt_movie_title);
+            holder.rating_Title = (TextView) view.findViewById(R.id.txt_rating_Title);
             holder.movie_Title.setText(movies[position]);
+            holder.rating_Title.setText(rating[position]);
             holder.movie_Thumb.setScaleType(ImageView.ScaleType.CENTER_CROP);
             holder.ratingStar = (RatingBar) view.findViewById(R.id.ratingStar) ;
-            holder.ratingStar.setStepSize((float)0.10);
-            int rat = rating[position];
+            holder.ratingStar.setMax(10);
+            int rat = Math.round (Float.parseFloat(rating[position]));
             holder.ratingStar.incrementProgressBy(rat);
 
 
 
         Picasso.with(mContext).load((urls[position])).resize(300, 450).centerCrop().into(holder.movie_Thumb);
+
         view.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -83,7 +86,6 @@ public class ImageAdapter extends BaseAdapter {
         return view;
     }
 
-    // references to our images
 
 
 }
