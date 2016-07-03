@@ -17,6 +17,9 @@ public class MovieParser{
     String movieNames[];
     String urlImages[];
     String rating[];
+    String movieDate[];
+    String movieOverview[];
+
 
         public MovieParser(){
 
@@ -41,6 +44,8 @@ public class MovieParser{
             movieNames = new String[reults.length()];
             urlImages = new String[reults.length()];
             rating = new String[reults.length()];
+            movieDate = new String[reults.length()];
+            movieOverview = new String[reults.length()];
             for(int i = 0; i < reults.length(); i++) {
 
                 try{
@@ -51,7 +56,8 @@ public class MovieParser{
                     movieNames[i] = singleMovie.getString("original_title");
                     urlImages[i]  = "https://image.tmdb.org/t/p/w300_and_h450_bestv2" + singleMovie.getString("poster_path");
                     rating[i] = singleMovie.getString("vote_average");
-
+                    movieDate[i] = singleMovie.getString("release_date");
+                    movieOverview[i] = singleMovie.getString("overview");
 
 
 
@@ -75,6 +81,14 @@ public class MovieParser{
 
     public String[] getRating() {
         return rating;
+    }
+
+    public String[] getMovieDate() {
+        return movieDate;
+    }
+
+    public String[] getMovieOverview() {
+            return movieOverview;
     }
 
     public static String titleize(final String input) {

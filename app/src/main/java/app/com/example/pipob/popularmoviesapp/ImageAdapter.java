@@ -1,6 +1,7 @@
 package app.com.example.pipob.popularmoviesapp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,8 @@ import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.w3c.dom.Text;
 
 /**
@@ -24,6 +27,8 @@ public class ImageAdapter extends BaseAdapter {
     String movies[];
     String urls[];
     String rating[];
+    String movieDate[];
+    String movieOverview[];
     public class Holder
     {
         TextView movie_Title,rating_Title;
@@ -31,11 +36,12 @@ public class ImageAdapter extends BaseAdapter {
         RatingBar  ratingStar;
 
     }
-    public ImageAdapter(Context c,String moviesNames[],String imageUrls[],String rat[]) {
+    public ImageAdapter(Context c,String moviesNames[],String imageUrls[],String rat[],String movieDat[],String movieOverv[]) {
         urls=imageUrls;
         movies=moviesNames;
         rating=rat;
-
+        movieDate=movieDat;
+        movieOverview=movieOverv;
         mContext = c;
         inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
@@ -79,8 +85,17 @@ public class ImageAdapter extends BaseAdapter {
 
             @Override
             public void onClick(View v) {
-                // TODO Auto-generated method stub
-                Toast.makeText(mContext, "You Clicked "+urls[position], Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(mContext, SelectedMovie.class);
+                    intent.putExtra("movie_Name", movies[position]);
+                    intent.putExtra("movie_Thumb", urls[position]);
+                    intent.putExtra("movie_Date", movieDate[position]);
+                    intent.putExtra("movie_Rating", rating[position]);
+                    intent.putExtra("movie_Overview", movieOverview[position]);
+
+                    mContext.startActivity(intent);
+
+
+
             }
         });
         return view;
