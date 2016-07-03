@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">Movies</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_settings">Settings</string>
+    <string name="pref_filter_key">filter</string>
+    <string name="pref_filter_label">Filter by:</string>
+    <string name="pref_filter_default">popular</string>
+    <string name="pref_filter_label_popular">Popular</string>
+    <string name="pref_filter_label_top_rated">Top Rated</string>
+    <string name="pref_filter_popular">popular</string>
+    <string name="pref_filter_top_rated">top_rated</string>
+
 </resources>

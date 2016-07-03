@@ -1,10 +1,16 @@
 package app.com.example.pipob.popularmoviesapp;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Adapter;
 import android.widget.BaseAdapter;
@@ -33,12 +39,25 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         gridView= (GridView) findViewById(R.id.gridViewMovies);
-        FetchMoviesTask moviesT = new FetchMoviesTask();
-        moviesT.execute();
-
         gridView.setAdapter(adapter);
 
 
+
+    }
+
+    public void updateMovies(){
+        FetchMoviesTask moviesT = new FetchMoviesTask();
+        SharedPreferences settings= PreferenceManager.getDefaultSharedPreferences(this);
+        String keylocation = getString(R.string.pref_filter_key);
+        String defaultLocation=getString(R.string.pref_filter_default);
+        String filter = settings.getString(keylocation,defaultLocation);
+        moviesT.execute(filter);
+
+    }
+    @Override
+    public void onStart(){
+        super.onStart();
+        updateMovies();
 
     }
     public void setmovies(){
@@ -46,6 +65,28 @@ public class MainActivity extends AppCompatActivity {
         gridView.setAdapter(adapter);
 
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                startActivity(new Intent(this, SettingsActivity.class));
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+
     public class FetchMoviesTask extends AsyncTask<String,Void,String[]> {
         String LOG_TAG=FetchMoviesTask.class.getSimpleName();
 
@@ -72,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
                 builder.authority("api.themoviedb.org");
                 builder.appendPath("3");
                 builder.appendPath("movie");
-                builder.appendPath("popular");
+                builder.appendPath(Params[0]);
                 builder.appendQueryParameter("api_key",getString(R.string.apiMovieKey));
                 //builder.appendQueryParameter("sort_by", "popularity.desc");
                 URL url = new URL(builder.build().toString());
