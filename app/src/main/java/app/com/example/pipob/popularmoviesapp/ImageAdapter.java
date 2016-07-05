@@ -2,7 +2,6 @@ package app.com.example.pipob.popularmoviesapp;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,13 +9,8 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 /**
  * Created by pipob on 03/07/2016.
@@ -24,6 +18,8 @@ import org.w3c.dom.Text;
 public class ImageAdapter extends BaseAdapter {
     private Context mContext;
     LayoutInflater inflater;
+
+
     String movies[];
     String urls[];
     String rating[];
@@ -31,8 +27,8 @@ public class ImageAdapter extends BaseAdapter {
     String movieOverview[];
     public class Holder
     {
-        TextView movie_Title,rating_Title;
-        ImageView movie_Thumb;
+        TextView movieTitle,ratingTitle;
+        ImageView movieThumb;
         RatingBar  ratingStar;
 
     }
@@ -66,12 +62,12 @@ public class ImageAdapter extends BaseAdapter {
 
 
             view = inflater.inflate(R.layout.grid_holder_layout, null);
-            holder.movie_Thumb = (ImageView) view.findViewById(R.id.img_thumb_movie);
-            holder.movie_Title = (TextView) view.findViewById(R.id.txt_movie_title);
-            holder.rating_Title = (TextView) view.findViewById(R.id.txt_rating_Title);
-            holder.movie_Title.setText(movies[position]);
-            holder.rating_Title.setText(rating[position]);
-            holder.movie_Thumb.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            holder.movieThumb = (ImageView) view.findViewById(R.id.img_thumb_movie);
+            holder.movieTitle = (TextView) view.findViewById(R.id.txt_movie_title);
+            holder.ratingTitle = (TextView) view.findViewById(R.id.txt_rating_Title);
+            holder.movieTitle.setText(movies[position]);
+            holder.ratingTitle.setText(rating[position]);
+            holder.movieThumb.setScaleType(ImageView.ScaleType.CENTER_CROP);
             holder.ratingStar = (RatingBar) view.findViewById(R.id.ratingStar) ;
             holder.ratingStar.setMax(10);
             int rat = Math.round (Float.parseFloat(rating[position]));
@@ -79,25 +75,7 @@ public class ImageAdapter extends BaseAdapter {
 
 
 
-        Picasso.with(mContext).load((urls[position])).resize(300, 450).centerCrop().into(holder.movie_Thumb);
-
-        view.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                    Intent intent = new Intent(mContext, SelectedMovie.class);
-                    intent.putExtra("movie_Name", movies[position]);
-                    intent.putExtra("movie_Thumb", urls[position]);
-                    intent.putExtra("movie_Date", movieDate[position]);
-                    intent.putExtra("movie_Rating", rating[position]);
-                    intent.putExtra("movie_Overview", movieOverview[position]);
-
-                    mContext.startActivity(intent);
-
-
-
-            }
-        });
+        Picasso.with(mContext).load((urls[position])).resize(300, 450).centerCrop().into(holder.movieThumb);
         return view;
     }
 

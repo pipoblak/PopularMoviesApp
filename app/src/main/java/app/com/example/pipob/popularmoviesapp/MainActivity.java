@@ -1,7 +1,11 @@
 package app.com.example.pipob.popularmoviesapp;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
@@ -13,6 +17,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Adapter;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 
@@ -42,12 +47,39 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         gridView= (GridView) findViewById(R.id.gridViewMovies);
         gridView.setAdapter(adapter);
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(view.getContext(), SelectedMovieActivity.class);
+                intent.putExtra("movie_Name", movieName[position]);
+                intent.putExtra("movie_Thumb", urls[position]);
+                intent.putExtra("movie_Date", movieDate[position]);
+                intent.putExtra("movie_Rating", rating[position]);
+                intent.putExtra("movie_Overview", movieOverview[position]);
 
+                startActivity(intent);
+            }
+        });
+
+
+    }
+    //Code based in beerLantern's code in Stackoverflow http://stackoverflow.com/questions/4086159/checking-internet-connection-on-android
+    public boolean haveInternet(Activity activity) {
+        ConnectivityManager internetManager = (ConnectivityManager)activity.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo internetInfo = internetManager.getActiveNetworkInfo();
+        return internetInfo != null;
+    }
+
+    public void updateMovies(Context ctx){
+
+        if (haveInternet(this) == true)
+            fetchMovie();
 
 
     }
 
-    public void updateMovies(){
+    public void fetchMovie(){
+
         FetchMoviesTask moviesT = new FetchMoviesTask();
         SharedPreferences settings= PreferenceManager.getDefaultSharedPreferences(this);
         String keylocation = getString(R.string.pref_filter_key);
@@ -59,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onStart(){
         super.onStart();
-        updateMovies();
+        updateMovies(this);
 
     }
     public void setmovies(){

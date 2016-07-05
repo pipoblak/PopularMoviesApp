@@ -4,4 +4,10 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="default_background">#101010</color>
+
+    <color name="ImageHolder_Detailed_Movie">#161616</color>
+    <color name="MovieTitle_Detailed_Movie_Background">#202020</color>
+    <color name="RatingBar_Detailed_Movie_Backgroud">#d3d3d3</color>
+    <color name="MovieRating_Detailed_Movie_Background">#a6a6a6</color>
+    <color name="MovieDate_Detailed_Movie_Background">#505050</color>
 </resources>

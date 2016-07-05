@@ -3,6 +3,7 @@
     package="app.com.example.pipob.popularmoviesapp">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -18,7 +19,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".SelectedMovie"
+            android:name=".SelectedMovieActivity"
             android:label="@string/title_activity_selected_movie"
             android:parentActivityName=".MainActivity">
             <meta-data
