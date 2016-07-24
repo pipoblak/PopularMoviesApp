@@ -73,6 +73,10 @@ public class DB {
         db.delete("Movie","_id= ?",new String[]{"" + movie.getId()});
     }
 
+    public void deleteAllMovies(){
+        db.delete("Movie",null,null);
+    }
+
     public List<Movie> searchAllMovies(){
         List <Movie> listMovies = new ArrayList<Movie>();
         String[] columns = {"_id","name","date","imageUrl","rating","overview","imageData"};

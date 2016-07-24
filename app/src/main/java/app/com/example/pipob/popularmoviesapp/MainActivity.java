@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     String movieJson;
     View v;
     Context context;
+    DB db ;
     @Override
         protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
         gridView= (GridView) findViewById(R.id.gridViewMovies);
         context=this;
         gridView.setAdapter(adapter);
+
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -73,10 +75,13 @@ public class MainActivity extends AppCompatActivity {
 
     public void updateMovies(Context ctx){
 
-        if (haveInternet(this) == true)
+        if (haveInternet(this) == true){
+            db = new DB(this);
+            db.deleteAllMovies();
             fetchMovie();
-        else
-            setmovies();
+        }
+        else{
+            setmovies();}
 
     }
     public void addOnDb(List<Movie> movies){
@@ -103,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
     public void setmovies(){
-        DB db = new DB (this);
+        db = new DB (this);
         movies= db.searchAllMovies();
         adapter= new MovieAdapter(this,movies);
         gridView.setAdapter(adapter);
