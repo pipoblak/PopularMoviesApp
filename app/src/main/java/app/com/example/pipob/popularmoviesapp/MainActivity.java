@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
     GridView gridView;
     Uri.Builder builder;
     List<Movie> movies;
-    String movieJson;
+    String movieJson,filter;
     View v;
     Context context;
     DB db ;
@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void updateMovies(Context ctx){
 
-        if (haveInternet(this) == true){
+        if (haveInternet(this)){
             db = new DB(this);
             db.deleteAllMovies();
             fetchMovie();
@@ -94,9 +94,9 @@ public class MainActivity extends AppCompatActivity {
 
         FetchMoviesTask moviesT = new FetchMoviesTask();
         SharedPreferences settings= PreferenceManager.getDefaultSharedPreferences(this);
-        String keylocation = getString(R.string.pref_filter_key);
-        String defaultLocation=getString(R.string.pref_filter_default);
-        String filter = settings.getString(keylocation,defaultLocation);
+        String keyFilter = getString(R.string.pref_filter_key);
+        String defaultFilter=getString(R.string.pref_filter_default);
+        filter = settings.getString(keyFilter,defaultFilter);
         moviesT.execute(filter);
 
 
