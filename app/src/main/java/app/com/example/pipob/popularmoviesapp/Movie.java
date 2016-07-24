@@ -4,6 +4,10 @@ package app.com.example.pipob.popularmoviesapp;
  * Created by pipob on 23/07/2016.
  */
 public class Movie {
+    long id;
+    String name,date, imageUrl,overview;
+    byte[] imageData;
+    float rating;
     public String getDate() {
         return date;
     }
@@ -52,8 +56,14 @@ public class Movie {
         this.imageUrl = imageUrl;
     }
 
-    long id;
-    String name,date, imageUrl,overview;
-    float rating;
+    public byte[] getImageData() {
+        return imageData;
+    }
+
+    public void setImageData(byte[] imageData) {
+        this.imageData = imageData;
+    }
+
+
 
 }

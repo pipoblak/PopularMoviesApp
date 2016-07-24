@@ -1,29 +1,28 @@
 package app.com.example.pipob.popularmoviesapp;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.List;
+
 /**
  * Created by pipob on 03/07/2016.
  */
-public class ImageAdapter extends BaseAdapter {
+public class MovieAdapter extends BaseAdapter {
     private Context mContext;
     LayoutInflater inflater;
 
 
-    String movies[];
-    String urls[];
-    String rating[];
-    String movieDate[];
-    String movieOverview[];
+    List<Movie> movies;
     public class Holder
     {
         TextView movieTitle,ratingTitle;
@@ -31,19 +30,15 @@ public class ImageAdapter extends BaseAdapter {
 
 
     }
-    public ImageAdapter(Context c,String moviesNames[],String imageUrls[],String rat[],String movieDat[],String movieOverv[]) {
-        urls=imageUrls;
-        movies=moviesNames;
-        rating=rat;
-        movieDate=movieDat;
-        movieOverview=movieOverv;
+    public MovieAdapter(Context c,List<Movie> movies) {
         mContext = c;
+        this.movies=movies;
         inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
     }
 
     public int getCount() {
-        return movies.length;
+        return movies.size();
     }
 
     public Object getItem(int position) {
@@ -64,12 +59,15 @@ public class ImageAdapter extends BaseAdapter {
             holder.movieThumb = (ImageView) view.findViewById(R.id.img_thumb_movie);
             holder.movieTitle = (TextView) view.findViewById(R.id.txt_movie_title);
             holder.ratingTitle = (TextView) view.findViewById(R.id.txt_rating_Title);
-            holder.movieTitle.setText(movies[position]);
-            holder.ratingTitle.setText(rating[position]);
-            holder.movieThumb.setScaleType(ImageView.ScaleType.CENTER_CROP);
             holder.ratingStar = (ImageView) view.findViewById(R.id.ratingStar) ;
 
-            int rat = Math.round (Float.parseFloat(rating[position]));
+            holder.movieTitle.setText(movies.get(position).getName());
+            holder.ratingTitle.setText(movies.get(position).getRating() + "");
+
+            holder.movieThumb.setScaleType(ImageView.ScaleType.CENTER_CROP);
+
+
+            int rat = Math.round (movies.get(position).getRating());
             if (rat<1){
                 holder.ratingStar.setImageResource(R.mipmap.ic_popcorn_empty);
             }
@@ -104,9 +102,11 @@ public class ImageAdapter extends BaseAdapter {
                 holder.ratingStar.setImageResource(R.mipmap.ic_popcorn_10);
             }
 
-
-
-        Picasso.with(mContext).load((urls[position])).resize(400, 550).centerCrop().into(holder.movieThumb);
+        byte[] img = movies.get(position).getImageData();
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        Bitmap bitmap = BitmapFactory.decodeByteArray(img, 0, img.length, options);
+        holder.movieThumb.setImageBitmap(bitmap);
+        //Picasso.with(mContext).load((bitmap)).resize(400, 550).centerCrop().into(holder.movieThumb);
         return view;
     }
 

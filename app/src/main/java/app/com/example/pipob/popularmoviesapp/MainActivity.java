@@ -16,7 +16,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
@@ -29,33 +28,35 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     BaseAdapter adapter=null;
     GridView gridView;
     Uri.Builder builder;
+    List<Movie> movies;
     String movieJson;
-    String movieName[]={""};
-    String urls[]={""};
-    String rating[]={""};
-    String movieDate[]={""};
-    String movieOverview[]={""};
     View v;
+    Context context;
     @Override
         protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         gridView= (GridView) findViewById(R.id.gridViewMovies);
+        context=this;
         gridView.setAdapter(adapter);
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(view.getContext(), SelectedMovieActivity.class);
-                intent.putExtra("movie_Name", movieName[position]);
-                intent.putExtra("movie_Thumb", urls[position]);
-                intent.putExtra("movie_Date", movieDate[position]);
-                intent.putExtra("movie_Rating", rating[position]);
-                intent.putExtra("movie_Overview", movieOverview[position]);
+
+                intent.putExtra("movie_Name", movies.get(position).getName());
+                intent.putExtra("movie_Thumb", movies.get(position).getImageUrl());
+                intent.putExtra("movie_Date", movies.get(position).getDate());
+                intent.putExtra("movie_Rating", movies.get(position).getRating() + "");
+                intent.putExtra("movie_Overview", movies.get(position).getOverview());
+                intent.putExtra("movie_ImageData", movies.get(position).getImageData());
 
                 startActivity(intent);
             }
@@ -74,7 +75,13 @@ public class MainActivity extends AppCompatActivity {
 
         if (haveInternet(this) == true)
             fetchMovie();
+        else
+            setmovies();
 
+    }
+    public void addOnDb(List<Movie> movies){
+        DB db = new DB(context);
+        db.insertMovies(movies);
 
     }
 
@@ -87,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
         String filter = settings.getString(keylocation,defaultLocation);
         moviesT.execute(filter);
 
+
     }
     @Override
     public void onStart(){
@@ -95,7 +103,9 @@ public class MainActivity extends AppCompatActivity {
 
     }
     public void setmovies(){
-        adapter= new ImageAdapter(this,movieName,urls,rating,movieDate,movieOverview);
+        DB db = new DB (this);
+        movies= db.searchAllMovies();
+        adapter= new MovieAdapter(this,movies);
         gridView.setAdapter(adapter);
 
     }
@@ -175,12 +185,8 @@ public class MainActivity extends AppCompatActivity {
                 movieJson = buffer.toString();
                 MovieParser movieparser = new MovieParser();
                 try{
-                    movieparser.getMovieDataFromJson(movieJson);
-                    movieName =movieparser.getMovieNames();
-                    urls=movieparser.getUrlImages();
-                    rating=movieparser.getRating();
-                    movieDate = movieparser .getMovieDate();
-                    movieOverview = movieparser.getMovieOverview();
+                    movies = movieparser.getMovieDataFromJson(movieJson);
+                    addOnDb(movies);
 
                 }catch (JSONException e) {
                     e.printStackTrace();

@@ -3,7 +3,9 @@ package app.com.example.pipob.popularmoviesapp;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,8 +29,32 @@ public class DB {
         values.put("imageUrl",movie.getImageUrl());
         values.put("rating",movie.getRating());
         values.put("overview",movie.getOverview());
+        values.put("imageData",movie.getImageData());
 
         db.insert("Movie",null,values);
+    }
+
+    public void insertMovies(List<Movie> movies){
+        ContentValues values = new ContentValues();
+
+       for (int i = 0;i<movies.size();i++){
+
+            values.put("name",movies.get(i).getName());
+            values.put("date",movies.get(i).getDate());
+            values.put("imageUrl",movies.get(i).getImageUrl());
+            values.put("rating",movies.get(i).getRating());
+            values.put("overview",movies.get(i).getOverview());
+            values.put("imageData",movies.get(i).getImageData());
+
+            try{
+                db.insert("Movie",null,values);
+                }
+            catch(Exception e){
+
+            }
+
+        }
+
     }
 
     public void update(Movie movie){
@@ -39,6 +65,7 @@ public class DB {
         values.put("imageUrl",movie.getImageUrl());
         values.put("rating",movie.getRating());
         values.put("overview",movie.getOverview());
+        values.put("imageData",movie.getImageData());
         db.update("Device",values,"_id= ?",new String[]{"" + movie.getId()});
     }
 
@@ -48,7 +75,7 @@ public class DB {
 
     public List<Movie> searchAllMovies(){
         List <Movie> listMovies = new ArrayList<Movie>();
-        String[] columns = {"_id","name","date","imageUrl","rating","overview"};
+        String[] columns = {"_id","name","date","imageUrl","rating","overview","imageData"};
 
         Cursor cursor = db.query("Movie",columns,null,null,null,null,null);
 
@@ -64,6 +91,7 @@ public class DB {
                 movie.setImageUrl(cursor.getString(3));
                 movie.setRating(cursor.getFloat(4));
                 movie.setOverview(cursor.getString(5));
+                movie.setImageData(cursor.getBlob(6));
                 listMovies.add(movie);
             }while(cursor.moveToNext());
 
