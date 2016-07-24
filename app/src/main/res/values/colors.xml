@@ -10,4 +10,6 @@
     <color name="RatingBar_Detailed_Movie_Backgroud">#d3d3d3</color>
     <color name="MovieRating_Detailed_Movie_Background">#a6a6a6</color>
     <color name="MovieDate_Detailed_Movie_Background">#505050</color>
+
+    <color name="HolderBar_Top">#FFFFFF</color>
 </resources>

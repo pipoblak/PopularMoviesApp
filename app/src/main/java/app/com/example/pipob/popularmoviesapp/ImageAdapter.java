@@ -1,7 +1,6 @@
 package app.com.example.pipob.popularmoviesapp;
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,8 +27,8 @@ public class ImageAdapter extends BaseAdapter {
     public class Holder
     {
         TextView movieTitle,ratingTitle;
-        ImageView movieThumb;
-        RatingBar  ratingStar;
+        ImageView movieThumb,ratingStar;
+
 
     }
     public ImageAdapter(Context c,String moviesNames[],String imageUrls[],String rat[],String movieDat[],String movieOverv[]) {
@@ -68,14 +67,46 @@ public class ImageAdapter extends BaseAdapter {
             holder.movieTitle.setText(movies[position]);
             holder.ratingTitle.setText(rating[position]);
             holder.movieThumb.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            holder.ratingStar = (RatingBar) view.findViewById(R.id.ratingStar) ;
-            holder.ratingStar.setMax(10);
+            holder.ratingStar = (ImageView) view.findViewById(R.id.ratingStar) ;
+
             int rat = Math.round (Float.parseFloat(rating[position]));
-            holder.ratingStar.incrementProgressBy(rat);
+            if (rat<1){
+                holder.ratingStar.setImageResource(R.mipmap.ic_popcorn_empty);
+            }
+            else if (rat>=1 && rat <2){
+                holder.ratingStar.setImageResource(R.mipmap.ic_popcorn_01);
+            }
+            else if (rat>=2 && rat <3){
+                holder.ratingStar.setImageResource(R.mipmap.ic_popcorn_02);
+            }
+            else if (rat>=3 && rat <4){
+                holder.ratingStar.setImageResource(R.mipmap.ic_popcorn_03);
+            }
+            else if (rat>=4 && rat <5){
+                holder.ratingStar.setImageResource(R.mipmap.ic_popcorn_04);
+            }
+            else if (rat>=5 && rat <6){
+                holder.ratingStar.setImageResource(R.mipmap.ic_popcorn_05);
+            }
+            else if (rat>=6 && rat <7){
+                holder.ratingStar.setImageResource(R.mipmap.ic_popcorn_06);
+            }
+            else if (rat>=7 && rat <8){
+                holder.ratingStar.setImageResource(R.mipmap.ic_popcorn_07);
+            }
+            else if (rat>=8 && rat <9){
+                holder.ratingStar.setImageResource(R.mipmap.ic_popcorn_08);
+            }
+            else if (rat>=9 && rat <10){
+                holder.ratingStar.setImageResource(R.mipmap.ic_popcorn_09);
+            }
+            else if (rat>=10){
+                holder.ratingStar.setImageResource(R.mipmap.ic_popcorn_10);
+            }
 
 
 
-        Picasso.with(mContext).load((urls[position])).resize(300, 450).centerCrop().into(holder.movieThumb);
+        Picasso.with(mContext).load((urls[position])).resize(400, 550).centerCrop().into(holder.movieThumb);
         return view;
     }
 
