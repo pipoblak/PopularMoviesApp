@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(view.getContext(), SelectedMovieActivity.class);
+                Intent intent = new Intent(view.getContext(), MovieTrailerActivity.class);
 
                 intent.putExtra("movie_Name", movies.get(position).getName());
                 intent.putExtra("movie_Thumb", movies.get(position).getImageUrl());
