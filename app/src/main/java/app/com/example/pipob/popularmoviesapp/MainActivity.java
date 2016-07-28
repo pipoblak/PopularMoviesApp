@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (haveInternet(this)){
             db = new DB(this);
-            db.deleteAllMovies();
+            db.deleteAllMovies(filter);
             fetchMovie();
         }
         else{
@@ -90,13 +90,16 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void fetchMovie(){
-
-        FetchMoviesTask moviesT = new FetchMoviesTask();
+    public void getFilter(){
         SharedPreferences settings= PreferenceManager.getDefaultSharedPreferences(this);
         String keyFilter = getString(R.string.pref_filter_key);
         String defaultFilter=getString(R.string.pref_filter_default);
         filter = settings.getString(keyFilter,defaultFilter);
+    }
+    public void fetchMovie(){
+
+        FetchMoviesTask moviesT = new FetchMoviesTask();
+        getFilter();
         moviesT.execute(filter);
 
 
@@ -104,12 +107,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onStart(){
         super.onStart();
+        getFilter();
         updateMovies(this);
 
     }
     public void setmovies(){
         db = new DB (this);
-        movies= db.searchAllMovies();
+        movies= db.searchAllMovies(filter);
         adapter= new MovieAdapter(this,movies);
         gridView.setAdapter(adapter);
 
@@ -146,7 +150,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         protected String[] doInBackground(String... Params) {
-
             HttpURLConnection urlConnection = null;
             BufferedReader reader = null;
 
@@ -190,7 +193,8 @@ public class MainActivity extends AppCompatActivity {
                 movieJson = buffer.toString();
                 MovieParser movieparser = new MovieParser();
                 try{
-                    movies = movieparser.getMovieDataFromJson(movieJson);
+                    movies = movieparser.getMovieDataFromJson(movieJson,filter);
+
                     addOnDb(movies);
 
                 }catch (JSONException e) {

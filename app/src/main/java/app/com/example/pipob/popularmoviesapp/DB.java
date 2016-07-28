@@ -30,6 +30,7 @@ public class DB {
         values.put("rating",movie.getRating());
         values.put("overview",movie.getOverview());
         values.put("imageData",movie.getImageData());
+        values.put("filter",movie.getFilter());
 
         db.insert("Movie",null,values);
     }
@@ -45,6 +46,7 @@ public class DB {
             values.put("rating",movies.get(i).getRating());
             values.put("overview",movies.get(i).getOverview());
             values.put("imageData",movies.get(i).getImageData());
+            values.put("filter",movies.get(i).getFilter());
 
             try{
                 db.insert("Movie",null,values);
@@ -66,6 +68,7 @@ public class DB {
         values.put("rating",movie.getRating());
         values.put("overview",movie.getOverview());
         values.put("imageData",movie.getImageData());
+        values.put("filter",movie.getFilter());
         db.update("Device",values,"_id= ?",new String[]{"" + movie.getId()});
     }
 
@@ -73,15 +76,16 @@ public class DB {
         db.delete("Movie","_id= ?",new String[]{"" + movie.getId()});
     }
 
-    public void deleteAllMovies(){
-        db.delete("Movie",null,null);
-    }
+    public void deleteAllMovies(String filter){
+        db.delete("Movie","filter='" + filter + "'",null);
+       }
 
-    public List<Movie> searchAllMovies(){
+    public List<Movie> searchAllMovies(String filter){
         List <Movie> listMovies = new ArrayList<Movie>();
-        String[] columns = {"_id","name","date","imageUrl","rating","overview","imageData"};
+        String[] columns = {"_id","name","date","imageUrl","rating","overview","imageData","filter"};
 
-        Cursor cursor = db.query("Movie",columns,null,null,null,null,null);
+        Cursor cursor = db.query("Movie",columns,"filter='"+filter+"'",null,null,null,null);
+
 
         if(cursor.getCount()>0){
             cursor.moveToFirst();
@@ -96,6 +100,7 @@ public class DB {
                 movie.setRating(cursor.getFloat(4));
                 movie.setOverview(cursor.getString(5));
                 movie.setImageData(cursor.getBlob(6));
+                movie.setFilter(cursor.getString(7));
                 listMovies.add(movie);
             }while(cursor.moveToNext());
 

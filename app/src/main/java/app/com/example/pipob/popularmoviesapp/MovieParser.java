@@ -37,7 +37,7 @@ public class MovieParser{
 
 
 
-        public List<Movie> getMovieDataFromJson(String json)
+        public List<Movie> getMovieDataFromJson(String json,String filter)
                 throws JSONException {
 
             List<Movie> movies = new ArrayList<Movie>();
@@ -80,6 +80,7 @@ public class MovieParser{
                     movie.setDate(movieDate[i]);
                     movie.setOverview(movieOverview[i]);
                     movie.setImageData(imageData[i]);
+                    movie.setFilter(filter);
                     movies.add(movie);
 
 

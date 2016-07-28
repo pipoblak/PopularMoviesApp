@@ -5,9 +5,21 @@ package app.com.example.pipob.popularmoviesapp;
  */
 public class Movie {
     long id;
-    String name,date, imageUrl,overview;
+    String name;
+    String date;
+    String imageUrl;
+    String overview;
+    String filter;
     byte[] imageData;
     float rating;
+    public String getFilter() {
+        return filter;
+    }
+
+    public void setFilter(String filter) {
+        this.filter = filter;
+    }
+
     public String getDate() {
         return date;
     }
