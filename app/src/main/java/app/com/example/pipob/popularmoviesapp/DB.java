@@ -23,7 +23,6 @@ public class DB {
 
     public void insert(Movie movie){
         ContentValues values = new ContentValues();
-
         values.put("name",movie.getName());
         values.put("date",movie.getDate());
         values.put("imageUrl",movie.getImageUrl());
@@ -33,6 +32,7 @@ public class DB {
         values.put("filter",movie.getFilter());
 
         db.insert("Movie",null,values);
+        db.close();
     }
 
     public void insertMovies(List<Movie> movies){
@@ -50,13 +50,14 @@ public class DB {
 
             try{
                 db.insert("Movie",null,values);
+
                 }
             catch(Exception e){
 
             }
 
         }
-
+        db.close();
     }
 
     public void update(Movie movie){
@@ -70,14 +71,17 @@ public class DB {
         values.put("imageData",movie.getImageData());
         values.put("filter",movie.getFilter());
         db.update("Device",values,"_id= ?",new String[]{"" + movie.getId()});
+        db.close();
     }
 
     public void delete(Movie movie){
         db.delete("Movie","_id= ?",new String[]{"" + movie.getId()});
+        db.close();
     }
 
     public void deleteAllMovies(String filter){
         db.delete("Movie","filter='" + filter + "'",null);
+        db.close();
        }
 
     public List<Movie> searchAllMovies(String filter){

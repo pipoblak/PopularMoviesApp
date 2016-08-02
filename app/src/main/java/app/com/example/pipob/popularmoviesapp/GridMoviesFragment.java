@@ -39,6 +39,7 @@ public class GridMoviesFragment extends Fragment {
     Uri.Builder builder;
     List<Movie> movies;
     String movieJson,filter;
+    SharedPreferences settings;
     View v;
 
     DB db ;
@@ -50,20 +51,25 @@ public class GridMoviesFragment extends Fragment {
         v= inflater.inflate(R.layout.grid_movies, container, false);
         gridView= (GridView) v.findViewById(R.id.gridViewMovies);
         gridView.setAdapter(adapter);
-
+        settings= PreferenceManager.getDefaultSharedPreferences(getActivity());
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(view.getContext(), SelectedMovieActivity.class);
+                Bundle movieAttributes = new Bundle();
 
-                intent.putExtra("movie_Name", movies.get(position).getName());
-                intent.putExtra("movie_Thumb", movies.get(position).getImageUrl());
-                intent.putExtra("movie_Date", movies.get(position).getDate());
-                intent.putExtra("movie_Rating", movies.get(position).getRating() + "");
-                intent.putExtra("movie_Overview", movies.get(position).getOverview());
-                intent.putExtra("movie_ImageData", movies.get(position).getImageData());
-
-                startActivity(intent);
+                movieAttributes.putString("movie_Name", movies.get(position).getName());
+                movieAttributes.putString("movie_Name", movies.get(position).getName());
+                movieAttributes.putString("movie_Thumb", movies.get(position).getImageUrl());
+                movieAttributes.putString("movie_Date", movies.get(position).getDate());
+                movieAttributes.putString("movie_Rating", movies.get(position).getRating() + "");
+                movieAttributes.putString("movie_Overview", movies.get(position).getOverview());
+                movieAttributes.putByteArray("movie_ImageData", movies.get(position).getImageData());
+                Fragment selectedMovie = new SelectedMovieFragment();
+                selectedMovie.setArguments(movieAttributes);
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.container, selectedMovie)
+                        .addToBackStack(null)
+                        .commit();
             }
         });
 
@@ -81,6 +87,7 @@ public class GridMoviesFragment extends Fragment {
 
         if (haveInternet(getActivity())){
             db = new DB(getActivity());
+           
             db.deleteAllMovies(filter);
             fetchMovie();
         }
@@ -95,7 +102,7 @@ public class GridMoviesFragment extends Fragment {
     }
 
     public void getFilter(){
-        SharedPreferences settings= PreferenceManager.getDefaultSharedPreferences(getActivity());
+        settings= PreferenceManager.getDefaultSharedPreferences(getActivity());
         String keyFilter = getString(R.string.pref_filter_key);
         String defaultFilter=getString(R.string.pref_filter_default);
         filter = settings.getString(keyFilter,defaultFilter);
