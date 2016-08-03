@@ -59,7 +59,9 @@ public class MainActivity extends AppCompatActivity {
             case R.id.action_settings:
                 startActivity(new Intent(this, SettingsActivity.class));
                 return true;
+            case R.id.action_refresh:
 
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

@@ -99,7 +99,7 @@ public class GridMoviesFragment extends Fragment {
         return internetInfo != null;
     }
 
-    public void updateMovies(Context ctx){
+    public  void updateMovies(Context ctx){
 
         if (haveInternet(getActivity())){
 
@@ -109,6 +109,7 @@ public class GridMoviesFragment extends Fragment {
         }
 
     }
+
     public void addOnDb(List<Movie> movies){
         db = new DB(getActivity());
         db.insertMovies(movies);
@@ -140,8 +141,9 @@ public class GridMoviesFragment extends Fragment {
 
 
 
-
     }
+
+
     public void setmovies(){
         db = new DB (getActivity());
         movies= db.searchAllMovies(filter);
@@ -164,7 +166,9 @@ public class GridMoviesFragment extends Fragment {
             case R.id.action_settings:
                 startActivity(new Intent(getActivity(), SettingsActivity.class));
                 return true;
-
+            case R.id.action_refresh:
+                updateMovies(getActivity());
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

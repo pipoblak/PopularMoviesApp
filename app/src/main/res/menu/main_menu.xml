@@ -9,6 +9,14 @@
             android:orderInCategory="100"
             app:showAsAction="always"
             android:icon="@drawable/ic_settings"/>
+        <item
+            android:id="@+id/action_refresh"
+            android:title="@string/action_refresh"
+            android:orderInCategory="1"
+            app:showAsAction="always"
+            android:icon="@drawable/ic_refresh"
+            android:visible="false"
+            />
 
 
 
