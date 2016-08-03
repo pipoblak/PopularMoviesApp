@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -40,6 +41,19 @@ public class SelectedMovieFragment extends Fragment {
             ((TextView) v.findViewById(R.id.txt_Detailed_Movie_Overview)).setText(movie_Overview);
             int rat = Math.round(Float.parseFloat(movie_Rating));
             ((RatingBar) v.findViewById(R.id.rating_Detailed_Movie_Rating)).incrementProgressBy(rat);
+
+            if (getString(R.string.isDualPane).equals("true")) {
+                LinearLayout viewerLayout = (LinearLayout) getActivity().findViewById(R.id.viewer);
+                viewerLayout.setVisibility(View.VISIBLE);
+            }
+
+
+
+        }else{
+            if (getString(R.string.isDualPane).equals("true")) {
+                LinearLayout viewerLayout = (LinearLayout) getActivity().findViewById(R.id.viewer);
+                viewerLayout.setVisibility(View.INVISIBLE);
+            }
 
 
         }

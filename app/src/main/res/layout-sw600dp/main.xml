@@ -6,18 +6,21 @@
     android:layout_height="match_parent"
     tools:context="app.com.example.pipob.popularmoviesapp.MainActivity"
     android:background="@color/default_background">
-    <fragment
+    <LinearLayout
         android:id="@+id/list"
         android:layout_weight="1"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        class="app.com.example.pipob.popularmoviesapp.GridMoviesFragment"
+        android:orientation="horizontal"
+
         tools:layout="@layout/grid_movies"/>
-    <fragment
+    <LinearLayout
         android:id="@+id/viewer"
         android:layout_weight="2"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        class="app.com.example.pipob.popularmoviesapp.SelectedMovieFragment"
-        tools:layout="@layout/activity_selected_movie"/>
+        android:orientation="horizontal"
+
+        tools:layout="@layout/activity_selected_movie"
+        android:visibility="invisible" />
 </LinearLayout>

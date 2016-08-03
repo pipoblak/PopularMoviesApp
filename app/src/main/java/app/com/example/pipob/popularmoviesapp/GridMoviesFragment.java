@@ -91,7 +91,6 @@ public class GridMoviesFragment extends Fragment {
         if(getString(R.string.isDualPane).equals("true")) {
             getFragmentManager().beginTransaction()
                     .replace(R.id.viewer, selectedMovie)
-                    .addToBackStack(null)
                     .commit();
         }
         else{
@@ -147,8 +146,14 @@ public class GridMoviesFragment extends Fragment {
 
         getFilter();
         updateMovies(getActivity());
-        if(getString(R.string.isDualPane).equals("true"))
-        actionFragment(0);
+        try{
+            if(getString(R.string.isDualPane).equals("true"))
+                actionFragment(0);
+        }catch(Exception e){
+
+        }
+
+
 
     }
     public void setmovies(){

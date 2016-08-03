@@ -29,8 +29,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.main);
         if(getString(R.string.isDualPane).equals("true")) {
             getFragmentManager().beginTransaction()
-                    .add(R.id.container, new GridMoviesFragment())
-                    .addToBackStack(null)
+                    .add(R.id.viewer, new SelectedMovieFragment())
+                    .commit();
+            getFragmentManager().beginTransaction()
+                    .add(R.id.list, new GridMoviesFragment())
                     .commit();
         }
         else{
