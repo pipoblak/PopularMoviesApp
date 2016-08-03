@@ -2,6 +2,7 @@ package app.com.example.pipob.popularmoviesapp;
 
 import android.app.Activity;
 import android.app.Fragment;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -29,6 +30,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Created by pipob on 31/07/2016.
@@ -48,33 +50,57 @@ public class GridMoviesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        v= inflater.inflate(R.layout.grid_movies, container, false);
-        gridView= (GridView) v.findViewById(R.id.gridViewMovies);
+        v = inflater.inflate(R.layout.grid_movies, container, false);
+        gridView = (GridView) v.findViewById(R.id.gridViewMovies);
         gridView.setAdapter(adapter);
-        settings= PreferenceManager.getDefaultSharedPreferences(getActivity());
+        settings = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        if (getString(R.string.isDualPane).equals("true")) {
+            gridView.setNumColumns(1);
+
+
+        }
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Bundle movieAttributes = new Bundle();
 
-                movieAttributes.putString("movie_Name", movies.get(position).getName());
-                movieAttributes.putString("movie_Name", movies.get(position).getName());
-                movieAttributes.putString("movie_Thumb", movies.get(position).getImageUrl());
-                movieAttributes.putString("movie_Date", movies.get(position).getDate());
-                movieAttributes.putString("movie_Rating", movies.get(position).getRating() + "");
-                movieAttributes.putString("movie_Overview", movies.get(position).getOverview());
-                movieAttributes.putByteArray("movie_ImageData", movies.get(position).getImageData());
-                Fragment selectedMovie = new SelectedMovieFragment();
-                selectedMovie.setArguments(movieAttributes);
-                getFragmentManager().beginTransaction()
-                        .replace(R.id.container, selectedMovie)
-                        .addToBackStack(null)
-                        .commit();
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                actionFragment(position);
+
+
             }
         });
 
         return v;
 
+    }
+
+
+    public void actionFragment(int position){
+
+        Bundle movieAttributes = new Bundle();
+
+        movieAttributes.putString("movie_Name", movies.get(position).getName());
+        movieAttributes.putString("movie_Name", movies.get(position).getName());
+        movieAttributes.putString("movie_Thumb", movies.get(position).getImageUrl());
+        movieAttributes.putString("movie_Date", movies.get(position).getDate());
+        movieAttributes.putString("movie_Rating", movies.get(position).getRating() + "");
+        movieAttributes.putString("movie_Overview", movies.get(position).getOverview());
+        movieAttributes.putByteArray("movie_ImageData", movies.get(position).getImageData());
+        Fragment selectedMovie = new SelectedMovieFragment();
+        selectedMovie.setArguments(movieAttributes);
+
+        if(getString(R.string.isDualPane).equals("true")) {
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.viewer, selectedMovie)
+                    .addToBackStack(null)
+                    .commit();
+        }
+        else{
+            getFragmentManager().beginTransaction()
+                    .add(R.id.container, selectedMovie)
+                    .addToBackStack(null)
+                    .commit();
+
+        }
     }
     //Code based in beerLantern's code in Stackoverflow http://stackoverflow.com/questions/4086159/checking-internet-connection-on-android
     public boolean haveInternet(Activity activity) {
@@ -121,6 +147,8 @@ public class GridMoviesFragment extends Fragment {
 
         getFilter();
         updateMovies(getActivity());
+        if(getString(R.string.isDualPane).equals("true"))
+        actionFragment(0);
 
     }
     public void setmovies(){

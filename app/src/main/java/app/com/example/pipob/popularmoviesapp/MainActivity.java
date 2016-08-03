@@ -27,10 +27,20 @@ public class MainActivity extends AppCompatActivity {
         protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-        getFragmentManager().beginTransaction()
-                .add(R.id.container, new GridMoviesFragment())
-                .addToBackStack(null)
-                .commit();
+        if(getString(R.string.isDualPane).equals("true")) {
+            getFragmentManager().beginTransaction()
+                    .add(R.id.container, new GridMoviesFragment())
+                    .addToBackStack(null)
+                    .commit();
+        }
+        else{
+            getFragmentManager().beginTransaction()
+                    .add(R.id.container, new GridMoviesFragment())
+                    .addToBackStack(null)
+                    .commit();
+        }
+
+
     }
 
     @Override
