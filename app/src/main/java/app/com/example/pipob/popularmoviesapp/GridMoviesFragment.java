@@ -90,9 +90,9 @@ public class GridMoviesFragment extends Fragment {
            
             db.deleteAllMovies(filter);
             fetchMovie();
+        }else{
+            setmovies();
         }
-        else{
-            setmovies();}
 
     }
     public void addOnDb(List<Movie> movies){

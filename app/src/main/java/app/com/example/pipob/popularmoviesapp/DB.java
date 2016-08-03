@@ -110,6 +110,7 @@ public class DB {
 
         }
         cursor.close();
+       db.close();
         return listMovies;
     }
 
