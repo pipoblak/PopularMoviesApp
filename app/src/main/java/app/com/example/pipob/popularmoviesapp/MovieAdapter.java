@@ -1,11 +1,17 @@
 package app.com.example.pipob.popularmoviesapp;
 
+import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -20,7 +26,7 @@ import java.util.List;
 public class MovieAdapter extends BaseAdapter {
     private Context mContext;
     LayoutInflater inflater;
-
+    FragmentManager fm;
 
     List<Movie> movies;
     public class Holder
@@ -60,7 +66,7 @@ public class MovieAdapter extends BaseAdapter {
             holder.movieTitle = (TextView) view.findViewById(R.id.txt_movie_title);
             holder.ratingTitle = (TextView) view.findViewById(R.id.txt_rating_Title);
             holder.ratingStar = (ImageView) view.findViewById(R.id.ratingStar) ;
-
+            fm = ((Activity) mContext).getFragmentManager();
             holder.movieTitle.setText(movies.get(position).getName());
             holder.ratingTitle.setText(movies.get(position).getRating() + "");
 
@@ -107,9 +113,44 @@ public class MovieAdapter extends BaseAdapter {
         Bitmap bitmap = BitmapFactory.decodeByteArray(img, 0, img.length, options);
         holder.movieThumb.setImageBitmap(bitmap);
         //Picasso.with(mContext).load((bitmap)).resize(400, 550).centerCrop().into(holder.movieThumb);
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Animation animation = AnimationUtils.loadAnimation(mContext, R.anim.anim_alpha);
+                v.startAnimation(animation);
+                actionFragment(position);
+            }
+        });
+
         return view;
     }
+    public void actionFragment(int position){
 
+        Bundle movieAttributes = new Bundle();
+
+        movieAttributes.putString("movie_Name", movies.get(position).getName());
+        movieAttributes.putString("movie_Name", movies.get(position).getName());
+        movieAttributes.putString("movie_Thumb", movies.get(position).getImageUrl());
+        movieAttributes.putString("movie_Date", movies.get(position).getDate());
+        movieAttributes.putString("movie_Rating", movies.get(position).getRating() + "");
+        movieAttributes.putString("movie_Overview", movies.get(position).getOverview());
+        movieAttributes.putByteArray("movie_ImageData", movies.get(position).getImageData());
+        Fragment selectedMovie = new SelectedMovieFragment();
+        selectedMovie.setArguments(movieAttributes);
+
+        if(mContext.getString(R.string.isDualPane).equals("true")) {
+            fm.beginTransaction()
+                    .replace(R.id.viewer, selectedMovie)
+                    .commit();
+        }
+        else{
+            fm.beginTransaction()
+                    .replace(R.id.container, selectedMovie)
+                    .addToBackStack(null)
+                    .commit();
+
+        }
+    }
 
 
 }

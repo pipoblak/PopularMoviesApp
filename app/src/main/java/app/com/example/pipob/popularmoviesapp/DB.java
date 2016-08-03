@@ -78,6 +78,9 @@ public class DB {
         db.delete("Movie","_id= ?",new String[]{"" + movie.getId()});
 
     }
+    public void close(){
+        db.close();
+    }
 
     public void deleteAllMovies(String filter){
         db.delete("Movie","filter='" + filter + "'",null);

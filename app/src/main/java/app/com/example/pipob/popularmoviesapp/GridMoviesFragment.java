@@ -17,6 +17,8 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
@@ -56,18 +58,7 @@ public class GridMoviesFragment extends Fragment {
         settings = PreferenceManager.getDefaultSharedPreferences(getActivity());
         if (getString(R.string.isDualPane).equals("true")) {
             gridView.setNumColumns(1);
-
-
         }
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                actionFragment(position);
-
-
-            }
-        });
 
         return v;
 
@@ -111,9 +102,7 @@ public class GridMoviesFragment extends Fragment {
     public void updateMovies(Context ctx){
 
         if (haveInternet(getActivity())){
-            db = new DB(getActivity());
-           
-            db.deleteAllMovies(filter);
+
             fetchMovie();
         }else{
             setmovies();
@@ -121,8 +110,9 @@ public class GridMoviesFragment extends Fragment {
 
     }
     public void addOnDb(List<Movie> movies){
-        DB db = new DB(getActivity());
+        db = new DB(getActivity());
         db.insertMovies(movies);
+        db.close();
 
     }
 
@@ -145,6 +135,7 @@ public class GridMoviesFragment extends Fragment {
         super.onStart();
 
         getFilter();
+
         updateMovies(getActivity());
         try{
             if(getString(R.string.isDualPane).equals("true"))
@@ -234,8 +225,12 @@ public class GridMoviesFragment extends Fragment {
                 MovieParser movieparser = new MovieParser();
                 try{
                     movies = movieparser.getMovieDataFromJson(movieJson,filter);
-
+                    db = new DB(getActivity());
+                    db.deleteAllMovies(filter);
+                    db.close();
                     addOnDb(movies);
+
+
 
                 }catch (JSONException e) {
                     e.printStackTrace();
