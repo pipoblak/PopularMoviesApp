@@ -96,7 +96,7 @@ public class GridMoviesFragment extends Fragment {
         }
         else{
             getFragmentManager().beginTransaction()
-                    .add(R.id.container, selectedMovie)
+                    .replace(R.id.container, selectedMovie)
                     .addToBackStack(null)
                     .commit();
 
