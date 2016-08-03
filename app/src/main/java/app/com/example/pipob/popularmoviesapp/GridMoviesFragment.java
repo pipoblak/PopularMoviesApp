@@ -137,12 +137,7 @@ public class GridMoviesFragment extends Fragment {
         getFilter();
 
         updateMovies(getActivity());
-        try{
-            if(getString(R.string.isDualPane).equals("true"))
-                actionFragment(0);
-        }catch(Exception e){
 
-        }
 
 
 
@@ -152,7 +147,12 @@ public class GridMoviesFragment extends Fragment {
         movies= db.searchAllMovies(filter);
         adapter= new MovieAdapter(getActivity(),movies);
         gridView.setAdapter(adapter);
+        try{
+            if(getString(R.string.isDualPane).equals("true"))
+                actionFragment(0);
+        }catch(Exception e){
 
+        }
     }
 
 
