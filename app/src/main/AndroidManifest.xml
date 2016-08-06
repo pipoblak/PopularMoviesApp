@@ -20,14 +20,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".SelectedMovieActivity"
-            android:label="@string/title_activity_selected_movie"
-            android:parentActivityName=".MainActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="app.com.example.pipob.popularmoviesapp.MainActivity" />
-        </activity>
-        <activity
             android:name=".MovieTrailerActivity"
             android:label="@string/title_activity_selected_movie"
             android:parentActivityName=".MainActivity">

@@ -231,7 +231,6 @@ public class GridMoviesFragment extends Fragment {
                     movies = movieparser.getMovieDataFromJson(movieJson,filter);
                     db = new DB(getActivity());
                     db.deleteAllMovies(filter);
-                    db.close();
                     addOnDb(movies);
 
 

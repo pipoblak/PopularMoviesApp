@@ -58,7 +58,7 @@ public class MovieAdapter extends BaseAdapter {
 
     public View getView(final int position, View convertView, ViewGroup parent) {
         Holder holder=new Holder();
-        View view = convertView;
+        View view ;
 
 
             view = inflater.inflate(R.layout.grid_holder_layout, null);

@@ -16,7 +16,7 @@ public class DBCore extends SQLiteOpenHelper {
     }
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE Movie(_id integer primary key autoincrement, name text not null , date text not null, imageUrl text not null, rating real not null, overview text not null,imageData blob not null,filter text not null);");
+        db.execSQL("CREATE TABLE Movie(_id integer primary id autoincrement, name text not null , date text not null, imageUrl text not null, rating real not null, overview text not null,imageData blob not null,filter text not null);");
     }
 
     @Override

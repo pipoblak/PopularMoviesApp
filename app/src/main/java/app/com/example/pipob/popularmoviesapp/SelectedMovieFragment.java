@@ -1,19 +1,39 @@
 package app.com.example.pipob.popularmoviesapp;
 
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import org.json.JSONException;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.List;
+
 public class SelectedMovieFragment extends Fragment {
     View v;
+    List<Trailer> trailers;
+    BaseAdapter adapter=null;
+    GridView gridView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -40,7 +60,42 @@ public class SelectedMovieFragment extends Fragment {
             ((TextView) v.findViewById(R.id.txt_Detailed_Movie_Rating)).setText(movie_Rating);
             ((TextView) v.findViewById(R.id.txt_Detailed_Movie_Overview)).setText(movie_Overview);
             int rat = Math.round(Float.parseFloat(movie_Rating));
-            ((RatingBar) v.findViewById(R.id.rating_Detailed_Movie_Rating)).incrementProgressBy(rat);
+            ImageView ratingStar = (ImageView) v.findViewById(R.id.rating_Detailed_Movie_Rating);
+            gridView = (GridView) v.findViewById(R.id.trailersGrid);
+
+            if (rat<1){
+                ratingStar.setImageResource(R.mipmap.ic_popcorn_empty);
+            }
+            else if (rat>=1 && rat <2){
+                ratingStar.setImageResource(R.mipmap.ic_popcorn_01);
+            }
+            else if (rat>=2 && rat <3){
+                ratingStar.setImageResource(R.mipmap.ic_popcorn_02);
+            }
+            else if (rat>=3 && rat <4){
+                ratingStar.setImageResource(R.mipmap.ic_popcorn_03);
+            }
+            else if (rat>=4 && rat <5){
+                ratingStar.setImageResource(R.mipmap.ic_popcorn_04);
+            }
+            else if (rat>=5 && rat <6){
+                ratingStar.setImageResource(R.mipmap.ic_popcorn_05);
+            }
+            else if (rat>=6 && rat <7){
+                ratingStar.setImageResource(R.mipmap.ic_popcorn_06);
+            }
+            else if (rat>=7 && rat <8){
+                ratingStar.setImageResource(R.mipmap.ic_popcorn_07);
+            }
+            else if (rat>=8 && rat <9){
+                ratingStar.setImageResource(R.mipmap.ic_popcorn_08);
+            }
+            else if (rat>=9 && rat <10){
+                ratingStar.setImageResource(R.mipmap.ic_popcorn_09);
+            }
+            else if (rat>=10){
+                ratingStar.setImageResource(R.mipmap.ic_popcorn_10);
+            }
 
             if (getString(R.string.isDualPane).equals("true")) {
                 LinearLayout viewerLayout = (LinearLayout) getActivity().findViewById(R.id.viewer);
@@ -59,6 +114,115 @@ public class SelectedMovieFragment extends Fragment {
         }
         return v;
     }
+
+    public void loadTrailers(List<Trailer> trailers){
+        adapter= new TrailerAdapter(getActivity(),trailers);
+        gridView.setAdapter(adapter);
+
+    }
+    public void fetchTrailers(){
+
+        FetchTrailersTask moviesT = new FetchTrailersTask();
+        moviesT.execute("209112");
+
+
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        fetchTrailers();
+    }
+
+    public class FetchTrailersTask extends AsyncTask<String,Void,String[]> {
+        String LOG_TAG=FetchTrailersTask.class.getSimpleName();
+
+
+        @Override
+        protected void onPostExecute(String[] result) {
+            loadTrailers(trailers);
+
+        }
+
+        protected String[] doInBackground(String... Params) {
+            HttpURLConnection urlConnection = null;
+            BufferedReader reader = null;
+
+
+
+            try {
+
+                Uri.Builder builder = new Uri.Builder();
+                builder.scheme("http");
+                builder.authority("api.themoviedb.org");
+                builder.appendPath("3");
+                builder.appendPath("movie");
+                builder.appendPath(Params[0]);
+                builder.appendPath("videos");
+                builder.appendQueryParameter("api_key",getString(R.string.apiMovieKey));
+                URL url = new URL(builder.build().toString());
+
+                urlConnection = (HttpURLConnection) url.openConnection();
+                urlConnection.setRequestMethod("GET");
+                urlConnection.connect();
+
+                InputStream inputStream = urlConnection.getInputStream();
+                StringBuffer buffer = new StringBuffer();
+                if (inputStream == null) {
+
+                    return null;
+                }
+                reader = new BufferedReader(new InputStreamReader(inputStream));
+
+                String line;
+                while ((line = reader.readLine()) != null) {
+
+                    buffer.append(line + "\n");
+                }
+
+                if (buffer.length() == 0) {
+
+                    return null;
+                }
+                String trailerJson = buffer.toString();
+
+                try{
+                    TrailerParser trailerParser = new TrailerParser(getActivity());
+                    trailers = trailerParser.getTrailerDataFromJson(trailerJson);
+
+                    //DB db = new DB(ctx);
+                    //addOnDb(movies);
+
+
+
+                }catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+            } catch (IOException e) {
+                Log.e("PlaceholderFragment", "Error ", e);
+
+                return null;
+            }  finally {
+                if (urlConnection != null) {
+                    urlConnection.disconnect();
+                }
+                if (reader != null) {
+                    try {
+                        reader.close();
+                    } catch (final IOException e) {
+                        Log.e("PlaceholderFragment", "Error closing stream", e);
+                    }
+                }
+            }
+
+
+            return null;
+        }
+
+    }
+
 }
 
 
