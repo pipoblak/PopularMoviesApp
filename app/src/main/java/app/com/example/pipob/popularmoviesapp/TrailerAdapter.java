@@ -27,7 +27,6 @@ public class TrailerAdapter extends BaseAdapter {
     public TrailerAdapter(Context c,List<Trailer> trailers) {
         mContext = c;
         this.trailers=trailers;
-        inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
     }
 
@@ -48,6 +47,8 @@ public class TrailerAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
+        inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
         View view = inflater.inflate(R.layout.grid_trailerholder_layout, null);
         TextView trailerName = (TextView) view.findViewById(R.id.trailerName);
         trailerName.setText("Trailer " + position);

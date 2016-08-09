@@ -1,9 +1,13 @@
 package app.com.example.pipob.popularmoviesapp;
 
+import android.app.Activity;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -34,6 +38,7 @@ public class SelectedMovieFragment extends Fragment {
     List<Trailer> trailers;
     BaseAdapter adapter=null;
     GridView gridView;
+    String movieApiId;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -117,22 +122,33 @@ public class SelectedMovieFragment extends Fragment {
 
     public void loadTrailers(List<Trailer> trailers){
         adapter= new TrailerAdapter(getActivity(),trailers);
-        gridView.setAdapter(adapter);
+        try{
+            gridView.setAdapter(adapter);
+        }catch(Exception e){}
+
 
     }
     public void fetchTrailers(){
 
         FetchTrailersTask moviesT = new FetchTrailersTask();
+
         moviesT.execute("209112");
 
 
     }
-
+    public boolean haveInternet(Activity activity) {
+        ConnectivityManager internetManager = (ConnectivityManager)activity.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo internetInfo = internetManager.getActiveNetworkInfo();
+        return internetInfo != null;
+    }
     @Override
     public void onStart() {
         super.onStart();
+        if(haveInternet(getActivity()))
         fetchTrailers();
     }
+
+
 
     public class FetchTrailersTask extends AsyncTask<String,Void,String[]> {
         String LOG_TAG=FetchTrailersTask.class.getSimpleName();
