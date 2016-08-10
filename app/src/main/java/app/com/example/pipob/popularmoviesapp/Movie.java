@@ -10,8 +10,23 @@ public class Movie {
     String imageUrl;
     String overview;
     String filter;
+
+
+    int apiID;
+
     byte[] imageData;
     float rating;
+
+
+
+    public int getApiID() {
+        return apiID;
+    }
+
+    public void setApiID(int apiID) {
+        this.apiID = apiID;
+    }
+
     public String getFilter() {
         return filter;
     }

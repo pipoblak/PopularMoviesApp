@@ -27,6 +27,8 @@ public class MovieParser{
     String rating[];
     String movieDate[];
     String movieOverview[];
+    int apiId [];
+
     byte[] imageData[] ;
 
 
@@ -58,6 +60,8 @@ public class MovieParser{
             movieDate = new String[reults.length()];
             movieOverview = new String[reults.length()];
             imageData = new byte [reults.length()] [];
+            apiId = new int[reults.length()];
+
             for(int i = 0; i < reults.length(); i++) {
 
                 try{
@@ -70,6 +74,9 @@ public class MovieParser{
                     rating[i] = singleMovie.getString("vote_average");
                     movieDate[i] = singleMovie.getString("release_date");
                     movieOverview[i] = singleMovie.getString("overview");
+                    apiId[i] = singleMovie.getInt("id");
+
+
                     URL url = new URL(urlImages[i]);
                     imageData[i]= downloadUrl(url);
 
@@ -81,6 +88,8 @@ public class MovieParser{
                     movie.setOverview(movieOverview[i]);
                     movie.setImageData(imageData[i]);
                     movie.setFilter(filter);
+                    movie.setApiID(apiId[i]);
+
                     movies.add(movie);
 
 

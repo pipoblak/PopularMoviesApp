@@ -30,6 +30,8 @@ public class DB {
         values.put("overview",movie.getOverview());
         values.put("imageData",movie.getImageData());
         values.put("filter",movie.getFilter());
+        values.put("apiID",movie.getApiID());
+
 
         db.insert("Movie",null,values);
 
@@ -47,6 +49,8 @@ public class DB {
             values.put("overview",movies.get(i).getOverview());
             values.put("imageData",movies.get(i).getImageData());
             values.put("filter",movies.get(i).getFilter());
+            values.put("apiID",movies.get(i).getApiID());
+
 
             try{
                 db.insert("Movie",null,values);
@@ -70,6 +74,7 @@ public class DB {
         values.put("overview",movie.getOverview());
         values.put("imageData",movie.getImageData());
         values.put("filter",movie.getFilter());
+        values.put("apiID",movie.getApiID());
         db.update("Device",values,"_id= ?",new String[]{"" + movie.getId()});
 
     }
@@ -89,7 +94,7 @@ public class DB {
 
     public List<Movie> searchAllMovies(String filter){
         List <Movie> listMovies = new ArrayList<Movie>();
-        String[] columns = {"_id","name","date","imageUrl","rating","overview","imageData","filter"};
+        String[] columns = {"_id","name","date","imageUrl","rating","overview","imageData","filter","apiId"};
 
         Cursor cursor = db.query("Movie",columns,"filter='"+filter+"'",null,null,null,null);
 
@@ -108,6 +113,7 @@ public class DB {
                 movie.setOverview(cursor.getString(5));
                 movie.setImageData(cursor.getBlob(6));
                 movie.setFilter(cursor.getString(7));
+                movie.setApiID(cursor.getInt(8));
                 listMovies.add(movie);
             }while(cursor.moveToNext());
 

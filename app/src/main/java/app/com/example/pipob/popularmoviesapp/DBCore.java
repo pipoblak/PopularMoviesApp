@@ -9,14 +9,14 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 public class DBCore extends SQLiteOpenHelper {
     private static final String NAME_DB="PopularMoviesApp";
-    private static final int VERSION_DB=4;
+    private static final int VERSION_DB=5;
     public DBCore(Context context){
         super(context,NAME_DB,null,VERSION_DB);
 
     }
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE Movie(_id integer primary id autoincrement, name text not null , date text not null, imageUrl text not null, rating real not null, overview text not null,imageData blob not null,filter text not null);");
+        db.execSQL("CREATE TABLE Movie(_id integer primary key autoincrement, name text not null , date text not null, imageUrl text not null, rating real not null, overview text not null,imageData blob not null,filter text not null,apiID integer not null);");
     }
 
     @Override

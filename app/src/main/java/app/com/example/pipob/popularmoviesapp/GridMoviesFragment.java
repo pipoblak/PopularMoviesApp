@@ -42,7 +42,7 @@ public class GridMoviesFragment extends Fragment {
     GridView gridView;
     Uri.Builder builder;
     List<Movie> movies;
-    String movieJson,filter;
+    String movieJson,filter,lastRefresh;
     SharedPreferences settings;
     View v;
 
@@ -75,6 +75,8 @@ public class GridMoviesFragment extends Fragment {
         movieAttributes.putString("movie_Date", movies.get(position).getDate());
         movieAttributes.putString("movie_Rating", movies.get(position).getRating() + "");
         movieAttributes.putString("movie_Overview", movies.get(position).getOverview());
+        movieAttributes.putString("movie_ApiId", movies.get(position).getApiID()+ "");
+
         movieAttributes.putByteArray("movie_ImageData", movies.get(position).getImageData());
         Fragment selectedMovie = new SelectedMovieFragment();
         selectedMovie.setArguments(movieAttributes);
@@ -100,10 +102,11 @@ public class GridMoviesFragment extends Fragment {
     }
 
     public  void updateMovies(Context ctx){
-
+        getLastRefresh();
         if (haveInternet(getActivity())){
 
             fetchMovie();
+
         }else{
             setmovies();
         }
@@ -123,6 +126,17 @@ public class GridMoviesFragment extends Fragment {
         String defaultFilter=getString(R.string.pref_filter_default);
         filter = settings.getString(keyFilter,defaultFilter);
     }
+
+    public void getLastRefresh(){
+        settings= PreferenceManager.getDefaultSharedPreferences(getActivity());
+        filter = settings.getString("last_Refresh","");
+    }
+
+    public void setLastRefresh(){
+        settings= PreferenceManager.getDefaultSharedPreferences(getActivity());
+        filter = settings.getString("last_Refresh","");
+    }
+
     public void fetchMovie(){
 
         FetchMoviesTask moviesT = new FetchMoviesTask();

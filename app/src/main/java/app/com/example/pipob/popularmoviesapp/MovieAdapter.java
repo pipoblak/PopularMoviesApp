@@ -135,6 +135,7 @@ public class MovieAdapter extends BaseAdapter {
         movieAttributes.putString("movie_Rating", movies.get(position).getRating() + "");
         movieAttributes.putString("movie_Overview", movies.get(position).getOverview());
         movieAttributes.putByteArray("movie_ImageData", movies.get(position).getImageData());
+        movieAttributes.putString("movie_ApiId", movies.get(position).getApiID()+ "");
         Fragment selectedMovie = new SelectedMovieFragment();
         selectedMovie.setArguments(movieAttributes);
 

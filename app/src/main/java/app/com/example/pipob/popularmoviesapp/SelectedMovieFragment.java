@@ -38,7 +38,7 @@ public class SelectedMovieFragment extends Fragment {
     List<Trailer> trailers;
     BaseAdapter adapter=null;
     GridView gridView;
-    String movieApiId;
+    String movieApiId="";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -53,6 +53,7 @@ public class SelectedMovieFragment extends Fragment {
             String movie_Date = movieAttributes.getString("movie_Date", "");
             String movie_Rating = movieAttributes.getString("movie_Rating", "");
             String movie_Overview = movieAttributes.getString("movie_Overview", "");
+            movieApiId = movieAttributes.getString("movie_ApiId","");
             byte[] img = movieAttributes.getByteArray("movie_ImageData");
 
             BitmapFactory.Options options = new BitmapFactory.Options();
@@ -130,9 +131,9 @@ public class SelectedMovieFragment extends Fragment {
     }
     public void fetchTrailers(){
 
-        FetchTrailersTask moviesT = new FetchTrailersTask();
+            FetchTrailersTask moviesT = new FetchTrailersTask();
 
-        moviesT.execute("209112");
+            moviesT.execute(movieApiId);
 
 
     }
@@ -144,8 +145,9 @@ public class SelectedMovieFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        if(haveInternet(getActivity()))
+        if(haveInternet(getActivity()) )
         fetchTrailers();
+
     }
 
 
