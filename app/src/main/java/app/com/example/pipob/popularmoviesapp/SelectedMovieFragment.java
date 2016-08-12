@@ -20,6 +20,7 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -36,8 +37,10 @@ import java.util.List;
 public class SelectedMovieFragment extends Fragment {
     View v;
     List<Trailer> trailers;
+    List<Comments> comments;
     BaseAdapter adapter=null;
     GridView gridView;
+    ListView listView;
     String movieApiId="";
 
     @Override
@@ -68,6 +71,7 @@ public class SelectedMovieFragment extends Fragment {
             int rat = Math.round(Float.parseFloat(movie_Rating));
             ImageView ratingStar = (ImageView) v.findViewById(R.id.rating_Detailed_Movie_Rating);
             gridView = (GridView) v.findViewById(R.id.trailersGrid);
+            listView = (ListView) v.findViewById(R.id.commentsList);
 
             if (rat<1){
                 ratingStar.setImageResource(R.mipmap.ic_popcorn_empty);
@@ -129,11 +133,28 @@ public class SelectedMovieFragment extends Fragment {
 
 
     }
+    public void loadComments(){
+        adapter= new CommentsAdapter(comments,getActivity());
+        try{
+            listView.setAdapter(adapter);
+        }catch(Exception e){}
+
+
+    }
+
     public void fetchTrailers(){
 
             FetchTrailersTask moviesT = new FetchTrailersTask();
 
             moviesT.execute(movieApiId);
+
+
+    }
+    public void fetchComments(){
+
+        FetchCommentsTask commentsT = new FetchCommentsTask();
+
+        commentsT.execute(movieApiId);
 
 
     }
@@ -145,9 +166,10 @@ public class SelectedMovieFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        if(haveInternet(getActivity()) )
-        fetchTrailers();
-
+        if(haveInternet(getActivity()) ) {
+            fetchTrailers();
+            fetchComments();
+        }
     }
 
 
@@ -240,7 +262,94 @@ public class SelectedMovieFragment extends Fragment {
         }
 
     }
+    public class FetchCommentsTask extends AsyncTask<String,Void,String[]> {
+        String LOG_TAG=FetchCommentsTask.class.getSimpleName();
 
+
+        @Override
+        protected void onPostExecute(String[] result) {
+            loadComments();
+
+        }
+
+        protected String[] doInBackground(String... Params) {
+            HttpURLConnection urlConnection = null;
+            BufferedReader reader = null;
+
+
+
+            try {
+
+                Uri.Builder builder = new Uri.Builder();
+                builder.scheme("http");
+                builder.authority("api.themoviedb.org");
+                builder.appendPath("3");
+                builder.appendPath("movie");
+                builder.appendPath(Params[0]);
+                builder.appendPath("reviews");
+                builder.appendQueryParameter("api_key",getString(R.string.apiMovieKey));
+                URL url = new URL(builder.build().toString());
+
+                urlConnection = (HttpURLConnection) url.openConnection();
+                urlConnection.setRequestMethod("GET");
+                urlConnection.connect();
+
+                InputStream inputStream = urlConnection.getInputStream();
+                StringBuffer buffer = new StringBuffer();
+                if (inputStream == null) {
+
+                    return null;
+                }
+                reader = new BufferedReader(new InputStreamReader(inputStream));
+
+                String line;
+                while ((line = reader.readLine()) != null) {
+
+                    buffer.append(line + "\n");
+                }
+
+                if (buffer.length() == 0) {
+
+                    return null;
+                }
+                String commentJson = buffer.toString();
+
+                try{
+                    CommentsParser commentsParser = new CommentsParser(getActivity());
+                    comments = commentsParser.getCommentsDataFromJson(commentJson);
+
+                    //DB db = new DB(ctx);
+                    //addOnDb(movies);
+
+
+
+                }catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+            } catch (IOException e) {
+                Log.e("PlaceholderFragment", "Error ", e);
+
+                return null;
+            }  finally {
+                if (urlConnection != null) {
+                    urlConnection.disconnect();
+                }
+                if (reader != null) {
+                    try {
+                        reader.close();
+                    } catch (final IOException e) {
+                        Log.e("PlaceholderFragment", "Error closing stream", e);
+                    }
+                }
+            }
+
+
+            return null;
+        }
+
+    }
 }
 
 
