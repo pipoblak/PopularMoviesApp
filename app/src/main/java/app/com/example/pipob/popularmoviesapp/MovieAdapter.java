@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +17,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -27,6 +30,7 @@ public class MovieAdapter extends BaseAdapter {
     private Context mContext;
     LayoutInflater inflater;
     FragmentManager fm;
+    Toast toast ;
 
     List<Movie> movies;
     public class Holder
@@ -40,7 +44,7 @@ public class MovieAdapter extends BaseAdapter {
         mContext = c;
         this.movies=movies;
         inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
+        toast=new Toast(mContext);
     }
 
     public int getCount() {
@@ -71,7 +75,21 @@ public class MovieAdapter extends BaseAdapter {
             holder.ratingTitle.setText(movies.get(position).getRating() + "");
 
             holder.movieThumb.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            holder.ratingStar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Animation animation = AnimationUtils.loadAnimation(mContext, R.anim.anim_rotate);
+                    v.startAnimation(animation);
+                    DB db = new DB(mContext);
+                    if( db.insertFavored(movies.get(position).getApiID()))
+                        showToast(mContext,"Filme Adicionado aos Favoritos!");
+                    else
+                        showToast(mContext,"Filme Removido dos Favoritos!");
 
+
+
+                }
+            });
 
             int rat = Math.round (movies.get(position).getRating());
             if (rat<1){
@@ -152,6 +170,15 @@ public class MovieAdapter extends BaseAdapter {
 
         }
     }
+    public void showToast(Context c, String message){
+        try {
+            toast.cancel();
+        }catch(Exception e){}
 
+
+        toast = Toast.makeText(c,message ,Toast.LENGTH_SHORT);
+        toast.show();
+
+    }
 
 }

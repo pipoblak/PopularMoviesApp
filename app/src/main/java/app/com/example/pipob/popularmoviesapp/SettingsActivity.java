@@ -1,16 +1,19 @@
 package app.com.example.pipob.popularmoviesapp;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.KeyEvent;
 
 
 public class SettingsActivity extends PreferenceActivity
         implements Preference.OnPreferenceChangeListener {
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -18,17 +21,24 @@ public class SettingsActivity extends PreferenceActivity
 
         addPreferencesFromResource(R.xml.pref_general);
 
-        bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_filter_key)));
+            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_filter_key)));
+
+
+
 
     }
 
 
+
     private void bindPreferenceSummaryToValue(Preference preference) {
+
         preference.setOnPreferenceChangeListener(this);
         onPreferenceChange(preference,
                 PreferenceManager
-                        .getDefaultSharedPreferences(preference.getContext())
+                        .getDefaultSharedPreferences(this)
                         .getString(preference.getKey(), ""));
+
+
     }
 
     @Override

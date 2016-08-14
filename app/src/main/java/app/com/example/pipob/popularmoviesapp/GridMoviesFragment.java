@@ -22,6 +22,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
+import android.widget.Toast;
 
 import org.json.JSONException;
 
@@ -103,7 +104,8 @@ public class GridMoviesFragment extends Fragment {
 
     public  void updateMovies(Context ctx){
         getLastRefresh();
-        if (haveInternet(getActivity())){
+        getFilter();
+        if (haveInternet(getActivity()) && !filter.equals("favored")){
 
             fetchMovie();
 
@@ -160,7 +162,12 @@ public class GridMoviesFragment extends Fragment {
 
     public void setmovies(){
         db = new DB (getActivity());
-        movies= db.searchAllMovies(filter);
+        if(filter.equals("favored")){
+            movies= db.searchAllFavoredMovies();
+
+        }
+        else{
+        movies= db.searchAllMovies(filter);}
         adapter= new MovieAdapter(getActivity(),movies);
         gridView.setAdapter(adapter);
         try{
@@ -170,6 +177,7 @@ public class GridMoviesFragment extends Fragment {
 
         }
     }
+
 
 
 
@@ -202,7 +210,8 @@ public class GridMoviesFragment extends Fragment {
             HttpURLConnection urlConnection = null;
             BufferedReader reader = null;
 
-
+            if(filter.equals("favored"))
+                this.cancel(true);
 
             try {
 
