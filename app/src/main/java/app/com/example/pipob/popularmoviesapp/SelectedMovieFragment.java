@@ -16,6 +16,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -23,6 +25,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONException;
 
@@ -42,13 +45,16 @@ public class SelectedMovieFragment extends Fragment {
     GridView gridView;
     ListView listView;
     String movieApiId="";
+    Toast toast;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         v = inflater.inflate(R.layout.activity_selected_movie, container, false);
-        Bundle movieAttributes = this.getArguments();
+        final Bundle movieAttributes = this.getArguments();
+
         if (movieAttributes != null) {
 
             String movie_Name = movieAttributes.getString("movie_Name", "");
@@ -58,6 +64,7 @@ public class SelectedMovieFragment extends Fragment {
             String movie_Overview = movieAttributes.getString("movie_Overview", "");
             movieApiId = movieAttributes.getString("movie_ApiId","");
             byte[] img = movieAttributes.getByteArray("movie_ImageData");
+            toast=new Toast(getActivity());
 
             BitmapFactory.Options options = new BitmapFactory.Options();
             Bitmap bitmap = BitmapFactory.decodeByteArray(img, 0, img.length, options);
@@ -73,6 +80,21 @@ public class SelectedMovieFragment extends Fragment {
             gridView = (GridView) v.findViewById(R.id.trailersGrid);
             listView = (ListView) v.findViewById(R.id.commentsList);
 
+            ratingStar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.anim_rotate);
+                    v.startAnimation(animation);
+                    DB db = new DB(getActivity());
+                    if( db.insertFavored(Integer.parseInt(movieApiId)))
+                        showToast(getActivity(),"Filme Adicionado aos Favoritos!");
+                    else
+                        showToast(getActivity(),"Filme Removido dos Favoritos!");
+
+
+
+                }
+            });
             if (rat<1){
                 ratingStar.setImageResource(R.mipmap.ic_popcorn_empty);
             }
@@ -348,6 +370,16 @@ public class SelectedMovieFragment extends Fragment {
 
             return null;
         }
+
+    }
+    public void showToast(Context c, String message){
+        try {
+            toast.cancel();
+        }catch(Exception e){}
+
+
+        toast = Toast.makeText(c,message ,Toast.LENGTH_SHORT);
+        toast.show();
 
     }
 }

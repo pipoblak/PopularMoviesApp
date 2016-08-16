@@ -15,14 +15,8 @@ import android.widget.GridView;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    BaseAdapter adapter=null;
-    GridView gridView;
-    Uri.Builder builder;
-    List<Movie> movies;
-    String movieJson,filter;
-    View v;
     Context context;
-    DB db ;
+
     @Override
         protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
